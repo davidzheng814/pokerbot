@@ -1,0 +1,142 @@
+body {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+.rangeTable {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+.rangeTable tr td{
+  margin: 0;
+  padding: 0;
+  border: 1px solid black;
+}
+
+.range-elt {
+  padding: 0px;
+  margin: 0px;
+  width: 25px;
+  height: 25px;
+  font-size: 10px;
+  text-align: center;
+  z-index: 1;
+  background-color: transparent;
+  position: relative;
+}
+
+.range-elt-0 {
+  background-color: #d3d3d3;
+  color: #000;
+}
+
+.range-elt-1 {
+  background-color: #ADD8E6;
+  color: #000;
+}
+
+.range-elt-2 {
+  background-color: #5b965b;
+}
+
+.centered {
+  padding-top: 5px;
+  position: absolute;
+  top: 0px;
+  left: 50%;
+  z-index: 2;
+  background-color: transparent;
+}
+
+.centered-child {
+  position: relative;
+  left: -50%;
+}
+
+.range-elt .back {
+  position: relative;
+  height: 25px;
+  z-index: 0;
+  float:left;
+}
+
+.range-elt .fold {
+  background-color: #d3d3d3;
+}
+
+.range-elt .call {
+  background-color: #ADD8E6;
+}
+
+.range-elt .raise {
+  background-color: #5b965b;
+}
+
+.range-elt .hold {
+  background-color: #b19cd9;
+}
+
+.cli {
+  width: 350px;
+  height: 100vh;
+  position: fixed;
+  right: 0px;
+  top: 0px;
+  border-left: 1px solid black;
+}
+
+.input {
+  position: relative;
+  height: 25px;
+}
+
+.input input {
+  width: 350px;
+  height: 25px;
+  outline-style: none;
+}
+
+.output {
+  position: relative;
+  font-size: 14px;
+  height: 95vh;
+  height: calc(100vh - 465px);
+  padding: 10px;
+  overflow: scroll;
+}
+
+.display {
+  height: 400px;
+  padding: 10px;
+  border-bottom: 1px solid black;
+  font-size: 13px;
+}
+
+.players {
+  -webkit-column-count: 2; /* Chrome, Safari, Opera */
+  -moz-column-count: 2; /* Firefox */
+  column-count: 2;
+}
+
+.smaller {
+  font-size: 11px;
+}
+
+.range-group {
+  margin-bottom: 20px;
+  margin-left: 20px;
+  float: left;
+}
+
+.empty-box {
+  text-align: center;
+  vertical-align: middle;
+  width: 337px;
+  height: 337px;
+  border: 1px solid black;
+  background-color: #d3d3d3;
+}
+
+.range-view {
+  width: calc(100vw - 360px);
+}

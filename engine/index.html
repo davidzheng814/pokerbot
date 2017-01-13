@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+
+<html>
+  <head>
+    <style>
+      table, th, td {
+        border: 1px solid black;
+      }
+      #list {
+        text-decoration:none;
+        list-style-type:none;
+        padding: 0px;
+        margin: 0px;
+      }
+      #range {
+        float:left;
+      }
+      .container {
+        height: 400px;
+        overflow: scroll;
+        width: 100px;
+        float:left;
+        border: 1px solid;
+        padding: 0px;
+        margin: 0 20px;
+      }
+      li {
+        width: 30px;
+        cursor: pointer;
+      }
+      #pct {
+        float: left;
+      }
+      #text {
+        clear: both;
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="./index.js"></script>
+  </head>
+  <body>
+    <table id="range">
+    </table>
+    <div class="container">
+      <ul id="list">
+      </ul>
+    </div>
+    <input type="text" placeholder="percentage" value="15" id="pct">
+    <div id="text"></div>
+  </body>
+</html>

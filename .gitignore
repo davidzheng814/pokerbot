@@ -1,0 +1,8 @@
+*.swp
+*.pyc
+received.txt
+*.o
+engine/poker
+static/dist
+static/node_modules
+static/web
