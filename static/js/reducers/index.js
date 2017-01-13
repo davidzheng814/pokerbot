@@ -5,7 +5,8 @@ const null_ranges = (x) => _.range(x).map(y => null);
 const initial_state = {
   num_players: start_num_players,
   ranges: null_ranges(start_num_players),
-  aranges: null_ranges(start_num_players)
+  aranges: null_ranges(start_num_players),
+  params_ind: null
 };
 
 function setRanges(ranges, aranges, newranges) {
@@ -41,6 +42,8 @@ export default (state=initial_state, action) => {
         aranges: null_ranges()
       };
       return Object.assign({}, state, newranges);
+    case 'SET_PARAMS_IND':
+      return Object.assign({}, state, { params_ind: action.ind })
     default:
       return state
   }

@@ -1,11 +1,33 @@
 #include "./cards.h"
 #include "./player.h"
+#include "./params.h"
+
+#include <iostream>
+#include <fstream>
 
 #include <stdbool.h>
 
 bool init = false;
 bool noprint = false;
 vector<Player> players;
+
+double FISH_POS_WT = 0;
+double LIGHT_POS_WT = 0;
+double UTG_DEFAULT_PCT = 0;
+double UTG_LOOSE_INC = 0;
+double UTG_TIGHT_INC = 0;
+double HJ_DEFAULT_PCT = 0;
+double HJ_LOOSE_INC = 0;
+double HJ_TIGHT_INC = 0;
+double CO_DEFAULT_PCT = 0;
+double CO_LOOSE_INC = 0;
+double CO_TIGHT_INC = 0;
+double BU_DEFAULT_PCT = 0;
+double BU_LOOSE_INC = 0;
+double BU_TIGHT_INC = 0;
+double SB_DEFAULT_PCT = 0;
+double SB_LOOSE_INC = 0;
+double SB_TIGHT_INC = 0;
 
 void print_arange(Player &player, int turn) {
   if (noprint) {
@@ -152,12 +174,58 @@ void free_gamestate(gamestate *g) {
   delete[] g->board;
 }
 
+struct param {
+  double *ref;
+  double val;
+};
+
 int main(int argc, char *argv[]) {
   gamestate g;
   int last_turn;
+
   if (argc > 1 && strcmp(argv[1], "-np") == 0) {
     noprint = true;
   }
+
+  map<string, double *> param_to_ref = {
+    {"FISH_POS_WT", &FISH_POS_WT},
+    {"LIGHT_POS_WT", &LIGHT_POS_WT},
+    {"UTG_DEFAULT_PCT", &UTG_DEFAULT_PCT},
+    {"UTG_LOOSE_INC", &UTG_LOOSE_INC},
+    {"UTG_TIGHT_INC", &UTG_TIGHT_INC},
+    {"HJ_DEFAULT_PCT", &HJ_DEFAULT_PCT},
+    {"HJ_LOOSE_INC", &HJ_LOOSE_INC},
+    {"HJ_TIGHT_INC", &HJ_TIGHT_INC},
+    {"CO_DEFAULT_PCT", &CO_DEFAULT_PCT},
+    {"CO_LOOSE_INC", &CO_LOOSE_INC},
+    {"CO_TIGHT_INC", &CO_TIGHT_INC},
+    {"BU_DEFAULT_PCT", &BU_DEFAULT_PCT},
+    {"BU_LOOSE_INC", &BU_LOOSE_INC},
+    {"BU_TIGHT_INC", &BU_TIGHT_INC},
+    {"SB_DEFAULT_PCT", &SB_DEFAULT_PCT},
+    {"SB_LOOSE_INC", &SB_LOOSE_INC},
+    {"SB_TIGHT_INC", &SB_TIGHT_INC},
+  };
+
+  char buffer[50] = "params/params0.txt";
+  if (argc > 1 && strcmp(argv[1], "--params") == 0) {
+    strcpy(buffer, argv[2]);
+  }
+  
+  ifstream params_file;
+  params_file.open(buffer, ios::out);
+
+	string line;
+	while (getline(params_file, line)) {
+	 std::istringstream iss(line);
+	 string name;
+	 double val;
+	 if (!(iss >> name >> val)) { break; }
+   *(param_to_ref[name]) = val;
+	}
+
+  params_file.close();
+
   while (true) {
     string inp;
     cin >> inp;

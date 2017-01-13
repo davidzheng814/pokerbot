@@ -38,6 +38,7 @@ class Model {
     this.pot = 0; this.active_pot = 0;
     this.updateFromServer = updateFromServer;
     this.resetRanges = resetRanges;
+    this.params_ind = null;
   }
 
   setBlinds(sb, bb) {
@@ -340,7 +341,8 @@ class Model {
 
     var payload = {
       data: JSON.stringify(data),
-      is_new_hand: is_new_hand
+      is_new_hand: is_new_hand,
+      params_ind: this.params_ind
     }
 
     $.post('/api/game_state/', payload, (data) => {

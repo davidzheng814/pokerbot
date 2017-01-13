@@ -2,7 +2,7 @@ from flask import Flask, send_from_directory
 from flask_restful import Api
 
 from views import main
-from api import GameState
+from api import GameState, Params
 
 import os
 import argparse
@@ -12,6 +12,7 @@ app.register_blueprint(main)
 
 api = Api(app)
 api.add_resource(GameState, '/api/game_state/')
+api.add_resource(Params, '/api/params/')
 
 @app.after_request
 def add_header(response):
@@ -24,7 +25,7 @@ def add_header(response):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--production', action="store_true", default=False)
+    parser.add_argument('--production', action="store_false")
 
     args = parser.parse_args()
 

@@ -43,3 +43,7 @@ export function resetRanges(text) {
 export function setNumPlayers(num_players) {
   return {type: 'SET_NUM_PLAYERS', num_players: num_players};
 }
+
+export function setParamsInd(x) {
+  return {type: 'SET_PARAMS_IND', ind: x};
+}

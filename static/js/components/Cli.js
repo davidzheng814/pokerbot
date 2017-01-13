@@ -85,6 +85,7 @@ class UnboundCli extends Component {
       this.scrollBot();
       this.shouldScrollBottom = false;
     }
+    this.model.params_ind = this.props.params_ind;
   }
 
   setSettings(tokens) {
@@ -250,6 +251,7 @@ class UnboundCli extends Component {
 const mapStateToProps = (state, ownProps) => {
   return {
 		// propName: state.prop
+    params_ind: state.params_ind,
   }
 }
 
