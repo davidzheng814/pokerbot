@@ -5,6 +5,7 @@ from views import main
 from api import GameState
 
 import os
+import argparse
 
 app = Flask(__name__)
 app.register_blueprint(main)
@@ -22,5 +23,13 @@ def add_header(response):
     return response
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--production', action="store_true", default=False)
+
+    args = parser.parse_args()
+
+    if args.production:
+        app.run(debug=True)
+    else:
+        app.run(host='172.31.14.235', port=5000)
 
