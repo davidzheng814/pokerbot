@@ -79,9 +79,6 @@ class UnboundParamsView extends Component{
         />
         <button onClick={() => this.setParams()}>Select Params</button>
         <br />
-        {this.state.params && 
-          <button onClick={() => this.updateParams()}>Save Params</button>
-        }
         {this.state.params &&
           this.state.params.map((x, i) => {
             return (
@@ -92,6 +89,7 @@ class UnboundParamsView extends Component{
                   ref={e => {this.pelts[i] = e}}
                   value={x[1]}
                   onChange={(e) => this.onChange(e, i)}
+                  onBlur={(e) => this.updateParams()}
                 />
               </div>
             )
