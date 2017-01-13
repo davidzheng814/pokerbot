@@ -160,13 +160,8 @@ class UnboundCli extends Component {
     return text;
   }
 
-  onSubmit(e) {
-    if (e.key !== 'Enter') {
-      return;
-    }
-    var cmd = this.inp.value.toLowerCase();
-    var tokens = cmd.split(' ');
-
+  processCommand(cmd) {
+    var tokens = cmd.replace(/^\s+|\s+$/g, '').split(' ');
     var text = '"' + cmd + '" is not a valid action.'
     switch (tokens[0]) {
       case 'board':
@@ -215,6 +210,16 @@ class UnboundCli extends Component {
     });
     this.inp.value = "";
     this.shouldScrollBottom = true;
+  }
+
+  onSubmit(e) {
+    if (e.key !== 'Enter') {
+      return;
+    }
+    var cmds = this.inp.value.toLowerCase().split(';');
+    for (var cmd of cmds) {
+      this.processCommand(cmd);
+    }
   }
 
   render() {
