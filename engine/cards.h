@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <iostream>
 #include <vector>
-#include <boost/algorithm/string/predicate.hpp>
 
 using namespace std;
 using json = nlohmann::json;
