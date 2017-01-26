@@ -13,21 +13,39 @@ vector<Player> players;
 
 double FISH_POS_WT = 0;
 double LIGHT_POS_WT = 0;
-double UTG_DEFAULT_PCT = 0;
-double UTG_LOOSE_INC = 0;
-double UTG_TIGHT_INC = 0;
-double HJ_DEFAULT_PCT = 0;
-double HJ_LOOSE_INC = 0;
-double HJ_TIGHT_INC = 0;
-double CO_DEFAULT_PCT = 0;
-double CO_LOOSE_INC = 0;
-double CO_TIGHT_INC = 0;
-double BU_DEFAULT_PCT = 0;
-double BU_LOOSE_INC = 0;
-double BU_TIGHT_INC = 0;
-double SB_DEFAULT_PCT = 0;
-double SB_LOOSE_INC = 0;
-double SB_TIGHT_INC = 0;
+double UTG_OPEN_PCT = 0;
+double UTG_OPEN_LOOSE_INC = 0;
+double UTG_OPEN_TIGHT_INC = 0;
+double HJ_OPEN_PCT = 0;
+double HJ_OPEN_LOOSE_INC = 0;
+double HJ_OPEN_TIGHT_INC = 0;
+double CO_OPEN_PCT = 0;
+double CO_OPEN_LOOSE_INC = 0;
+double CO_OPEN_TIGHT_INC = 0;
+double BU_OPEN_PCT = 0;
+double BU_OPEN_LOOSE_INC = 0;
+double BU_OPEN_TIGHT_INC = 0;
+double SB_OPEN_PCT = 0;
+double SB_OPEN_LOOSE_INC = 0;
+double SB_OPEN_TIGHT_INC = 0;
+double OPEN_BUFFER_PCT = 0;
+double HJ_UTG_CALLOPEN_PCT = 0;
+double CO_UTG_CALLOPEN_PCT = 0;
+double BU_UTG_CALLOPEN_PCT = 0;
+double SB_UTG_CALLOPEN_PCT = 0;
+double BB_UTG_CALLOPEN_PCT = 0;
+double CO_HJ_CALLOPEN_PCT = 0;
+double BU_HJ_CALLOPEN_PCT = 0;
+double SB_HJ_CALLOPEN_PCT = 0;
+double BB_HJ_CALLOPEN_PCT = 0;
+double BU_CO_CALLOPEN_PCT = 0;
+double SB_CO_CALLOPEN_PCT = 0;
+double BB_CO_CALLOPEN_PCT = 0;
+double SB_BU_CALLOPEN_PCT = 0;
+double BB_BU_CALLOPEN_PCT = 0;
+double BB_SB_CALLOPEN_PCT = 0;
+double CALLOPEN_BUFFER_PCT = 0;
+double BONUS_3BET = 0;
 
 void print_arange(Player &player, int turn) {
   if (noprint) {
@@ -99,8 +117,8 @@ void initialize(json &state, gamestate *g) {
     players.push_back(player);
     print_range(player, i);
   }
-
-  g->is_open = true;
+  g->num_raises = 0;
+  g->num_callers = 0;
 }
 
 void think(gamestate *g) {
@@ -125,7 +143,15 @@ int num_board_cards(string street) {
 void update_gamestate(gamestate *g, json &state) {
   g->num_players = state["num_players"];
   g->turn = state["turn"];
+  g->last_turn = state["last_turn"];
+
+  string last_street = g->street;
   g->street = state["street"];
+  bool is_new_flop = false;
+  if (last_street == "p" && g->street == "f") {
+    is_new_flop = true;
+  }
+
   g->pot = state["pot"];
   g->active_pot = state["active_pot"];
   g->stacks = new int[g->num_players];
@@ -133,14 +159,14 @@ void update_gamestate(gamestate *g, json &state) {
   g->num_actions = state["actions"].size();
   g->actions = new char[g->num_actions];
   g->bets = new int[g->num_actions];
-  g->board = new string[5];
+  g->board = new int[5];
   g->num_board_cards = num_board_cards(g->street);
   g->num_limpers = 0;
 
   const vector<int> &stacks = state["stacks"];
   const vector<int> &cur_bets = state["cur_bets"];
   const vector<string> &actions = state["actions"];
-  const vector<string> &board = state["board"];
+  const vector<int> &board = state["board"];
   for (int i = 0; i < g->num_players; ++i) {
     g->stacks[i] = stacks[i];
     g->cur_bets[i] = cur_bets[i];
@@ -159,12 +185,39 @@ void update_gamestate(gamestate *g, json &state) {
     g->board[i] = board[i];
   }
 
-  if (g->is_open && g->street == "p" && g->actions[g->num_actions-1] == 'c') {
+  if (g->num_actions == 0) return;
+  char last_action = g->actions[g->num_actions-1];
+
+  if (g->num_raises == 0 && g->street == "p" && last_action == 'c') {
     g->num_limpers++;
   }
 
-  if (g->is_open && g->street == "p" && g->actions[g->num_actions-1] == 'r') {
-    g->is_open = false;
+  if (last_action == 'r' && g->num_raises == 0 && g->street == "p") {
+    g->open_ind = g->last_turn;
+  }
+
+  if (is_new_flop) {
+    g->num_raises = 0;
+    g->heads_up = g->num_callers == 1;
+    if (g->heads_up) {
+      
+    }
+    g->num_callers = 0;
+  }
+
+  if (last_action == 'r') {
+    g->num_raises++;
+    g->num_callers = 0;
+    if (g->street == "p") {
+      g->aggressor_ind = g->last_turn;
+    }
+  }
+
+  if (last_action == 'c') {
+    g->num_callers++;
+    if (g->street == "p") {
+      g->caller_ind = g->last_turn;
+    }
   }
 }
 
@@ -190,21 +243,39 @@ int main(int argc, char *argv[]) {
   map<string, double *> param_to_ref = {
     {"FISH_POS_WT", &FISH_POS_WT},
     {"LIGHT_POS_WT", &LIGHT_POS_WT},
-    {"UTG_DEFAULT_PCT", &UTG_DEFAULT_PCT},
-    {"UTG_LOOSE_INC", &UTG_LOOSE_INC},
-    {"UTG_TIGHT_INC", &UTG_TIGHT_INC},
-    {"HJ_DEFAULT_PCT", &HJ_DEFAULT_PCT},
-    {"HJ_LOOSE_INC", &HJ_LOOSE_INC},
-    {"HJ_TIGHT_INC", &HJ_TIGHT_INC},
-    {"CO_DEFAULT_PCT", &CO_DEFAULT_PCT},
-    {"CO_LOOSE_INC", &CO_LOOSE_INC},
-    {"CO_TIGHT_INC", &CO_TIGHT_INC},
-    {"BU_DEFAULT_PCT", &BU_DEFAULT_PCT},
-    {"BU_LOOSE_INC", &BU_LOOSE_INC},
-    {"BU_TIGHT_INC", &BU_TIGHT_INC},
-    {"SB_DEFAULT_PCT", &SB_DEFAULT_PCT},
-    {"SB_LOOSE_INC", &SB_LOOSE_INC},
-    {"SB_TIGHT_INC", &SB_TIGHT_INC},
+    {"UTG_OPEN_PCT", &UTG_OPEN_PCT},
+    {"UTG_OPEN_LOOSE_INC", &UTG_OPEN_LOOSE_INC},
+    {"UTG_OPEN_TIGHT_INC", &UTG_OPEN_TIGHT_INC},
+    {"HJ_OPEN_PCT", &HJ_OPEN_PCT},
+    {"HJ_OPEN_LOOSE_INC", &HJ_OPEN_LOOSE_INC},
+    {"HJ_OPEN_TIGHT_INC", &HJ_OPEN_TIGHT_INC},
+    {"CO_OPEN_PCT", &CO_OPEN_PCT},
+    {"CO_OPEN_LOOSE_INC", &CO_OPEN_LOOSE_INC},
+    {"CO_OPEN_TIGHT_INC", &CO_OPEN_TIGHT_INC},
+    {"BU_OPEN_PCT", &BU_OPEN_PCT},
+    {"BU_OPEN_LOOSE_INC", &BU_OPEN_LOOSE_INC},
+    {"BU_OPEN_TIGHT_INC", &BU_OPEN_TIGHT_INC},
+    {"SB_OPEN_PCT", &SB_OPEN_PCT},
+    {"SB_OPEN_LOOSE_INC", &SB_OPEN_LOOSE_INC},
+    {"SB_OPEN_TIGHT_INC", &SB_OPEN_TIGHT_INC},
+    {"OPEN_BUFFER_PCT", &OPEN_BUFFER_PCT},
+    {"HJ_UTG_CALLOPEN_PCT", &HJ_UTG_CALLOPEN_PCT},
+    {"CO_UTG_CALLOPEN_PCT", &CO_UTG_CALLOPEN_PCT},
+    {"BU_UTG_CALLOPEN_PCT", &BU_UTG_CALLOPEN_PCT},
+    {"SB_UTG_CALLOPEN_PCT", &SB_UTG_CALLOPEN_PCT},
+    {"BB_UTG_CALLOPEN_PCT", &BB_UTG_CALLOPEN_PCT},
+    {"CO_HJ_CALLOPEN_PCT", &CO_HJ_CALLOPEN_PCT},
+    {"BU_HJ_CALLOPEN_PCT", &BU_HJ_CALLOPEN_PCT},
+    {"SB_HJ_CALLOPEN_PCT", &SB_HJ_CALLOPEN_PCT},
+    {"BB_HJ_CALLOPEN_PCT", &BB_HJ_CALLOPEN_PCT},
+    {"BU_CO_CALLOPEN_PCT", &BU_CO_CALLOPEN_PCT},
+    {"SB_CO_CALLOPEN_PCT", &SB_CO_CALLOPEN_PCT},
+    {"BB_CO_CALLOPEN_PCT", &BB_CO_CALLOPEN_PCT},
+    {"SB_BU_CALLOPEN_PCT", &SB_BU_CALLOPEN_PCT},
+    {"BB_BU_CALLOPEN_PCT", &BB_BU_CALLOPEN_PCT},
+    {"BB_SB_CALLOPEN_PCT", &BB_SB_CALLOPEN_PCT},
+    {"CALLOPEN_BUFFER_PCT", &CALLOPEN_BUFFER_PCT},
+    {"BONUS_3BET", &BONUS_3BET},
   };
 
   char buffer[50] = "params/params0.txt";

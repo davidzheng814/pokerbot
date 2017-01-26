@@ -18,6 +18,19 @@ using json = nlohmann::json;
 #define NUM_HANDS 1326 // 52 nCr 2
 #define dot(a, b) a.pair * b.pair + a.versa + b.versa + a.nut * b.nut
 #define HAND(a, b) (((a) * ((a) - 1) / 2) + (b))
+#define COMMENT(x) cout << "comment," << x << ",;\n"
+
+struct gamestate;
+class Player;
+
+enum order {
+  OPEN = 5,
+  CALL_UTG = 0,
+  CALL_HJ = 1,
+  CALL_CO = 2,
+  CALL_BU = 3,
+  CALL_SB = 4
+};
 
 typedef struct act {
   double fold;
@@ -25,7 +38,16 @@ typedef struct act {
   double raise;
 } act;
 
+typedef struct standing {
+  double equity;
+  double sdv;
+  double vulnerability;
+} standing;
+
 typedef pair<int, int> pii;
+typedef pair<uint8_t, uint8_t> pbb;
+typedef pair<double, int> pdi;
+typedef pair<double, double> pdd;
 typedef int hand_t;
 typedef int combo_t;
 typedef double* range_t;
@@ -68,19 +90,24 @@ enum position {
   BB = 5
 };
 
-extern string CARD_TO_STR[];
 extern const strength STRENGTHS[];
 
-// Based on STRENGTHS, return combo ordering for a given weight vector.
-vector<int> get_ordering(weight weight);
-
-// Returns the string associated with a given combo.
+vector<int> combo_to_hands(int combo);
+double get_range_equity(range_t range, int hand, double top_pct);
 string combo_to_str(combo_t combo);
 void set_starting_range(range_t range);
 void set_blockers(range_t range, int card1, int card2);
 void set_open_arange(arange_t out, position pos, int num_limpers);
+void set_oneraise_arange(arange_t out, range_t range, range_t open_range,
+    position pos, position openpos, int num_callers);
+void set_flop_noraise_arange(arange_t out, position pos,
+    const vector<Player> &players, const gamestate *g);
 void set_default_arange(arange_t out);
 void convert_to_combos_a(arange_t hands, arange_t combos);
 void convert_to_combos(range_t hands, range_t combos);
+void convert_to_combos_with_blockers(range_t hands, range_t combos, int card1, int card2);
 void bayes_apply(range_t range, arange_t arange, char action);
+double board_texture(range_t range, int *board, int num_board_cards);
+double get_equity(int hand1, int hand2, int *board, int num_board_cards);
+standing get_standings_vs_range(range_t range, int hand, int *board, int num_board_cards);
 #endif

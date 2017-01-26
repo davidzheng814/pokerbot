@@ -139,11 +139,8 @@ body {
 
 .params-view {
   width: calc(100vw - 360px);
-  height: 280px;
+  height: 100px;
   margin-left: 20px;
-  -webkit-column-count: 2; /* Chrome, Safari, Opera */
-  -moz-column-count: 2; /* Firefox */
-  column-count: 2;
 }
 
 .range-view {

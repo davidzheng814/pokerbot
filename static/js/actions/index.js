@@ -1,3 +1,5 @@
+import $ from 'jquery'
+
 function chunk (x, size) {
   var y = [];
   for (var i = 0; i < x.length; i += size) {
@@ -9,8 +11,9 @@ function chunk (x, size) {
 export function updateFromServer(text) {
   var updates = text.split(';').slice(0, -1);
   var newranges = [];
+  var comments = [];
   for (var update of updates) {
-    var [action, ...rest] = update.split(',').slice(0, -1);
+    var [action, ...rest] = $.trim(update).split(',').slice(0, -1);
     if (action.startsWith('arange')) {
       var range = chunk(rest.map(parseFloat), 3);
       newranges.push({
@@ -25,12 +28,15 @@ export function updateFromServer(text) {
         ind:parseInt(action.split(':')[1]),
         range:range
       });
+    } else if (action.startsWith('comment')) {
+      comments.push(rest[0]);
     }
   }
 
   return {
     type: 'SET_RANGES',
-    ranges: newranges
+    ranges: newranges,
+    comments: comments
   }
 }
 

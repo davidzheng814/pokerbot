@@ -56,6 +56,8 @@ class Model {
     this.board.push(...board);
 
     var text = "Set board to " + this.board.join(" ") + ". ";
+
+    this.queryIfCan();
     return text;
   }
 
@@ -147,6 +149,7 @@ class Model {
       this.pos = (this.pos + 1) % this.num_players;
     }
     this.turn = this.posNumToPlayer(0);
+    this.last_turn = -1;
     this.actions = [];
 
     this.live_players = [];
@@ -175,7 +178,8 @@ class Model {
     return text;
   }
 
-  setNextLive(incr=false) {
+  setNextLive(incr=false, set_last_turn=true) {
+    if (set_last_turn) this.last_turn = this.turn;
     if (incr) {
       this.turn = (this.turn + 1) % this.num_players;
     }
@@ -281,9 +285,10 @@ class Model {
           }
 
           this.acts_since_raise = 0;
+          this.last_turn = this.turn;
           this.turn = this.posNumToPlayer(-2);
           this.min_bet = 0;
-          this.setNextLive();
+          this.setNextLive(false, false);
           this.setNextStreet();
           text += "Next street is " + this.getStreetStr() + ". ";
           if ((this.street == 'f' && this.board.length < 3)
@@ -331,6 +336,7 @@ class Model {
       stacks: this.players.map((x) => x.stack),
       pos: this.pos,
       turn: this.turn,
+      last_turn: this.last_turn,
       pot: this.pot,
       active_pot: this.active_pot,
       cur_bets: this.cur_bets,
@@ -352,7 +358,7 @@ class Model {
       this.updateFromServer(data.text);
     });
 
-    return ""
+    return "";
   }
 }
 

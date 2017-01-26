@@ -3,20 +3,39 @@
 
 extern double FISH_POS_WT;
 extern double LIGHT_POS_WT;
-extern double UTG_DEFAULT_PCT;
-extern double UTG_LOOSE_INC;
-extern double UTG_TIGHT_INC;
-extern double HJ_DEFAULT_PCT;
-extern double HJ_LOOSE_INC;
-extern double HJ_TIGHT_INC;
-extern double CO_DEFAULT_PCT;
-extern double CO_LOOSE_INC;
-extern double CO_TIGHT_INC;
-extern double BU_DEFAULT_PCT;
-extern double BU_LOOSE_INC;
-extern double BU_TIGHT_INC;
-extern double SB_DEFAULT_PCT;
-extern double SB_LOOSE_INC;
-extern double SB_TIGHT_INC;
+
+extern double UTG_OPEN_PCT;
+extern double UTG_OPEN_LOOSE_INC;
+extern double UTG_OPEN_TIGHT_INC;
+extern double HJ_OPEN_PCT;
+extern double HJ_OPEN_LOOSE_INC;
+extern double HJ_OPEN_TIGHT_INC;
+extern double CO_OPEN_PCT;
+extern double CO_OPEN_LOOSE_INC;
+extern double CO_OPEN_TIGHT_INC;
+extern double BU_OPEN_PCT;
+extern double BU_OPEN_LOOSE_INC;
+extern double BU_OPEN_TIGHT_INC;
+extern double SB_OPEN_PCT;
+extern double SB_OPEN_LOOSE_INC;
+extern double SB_OPEN_TIGHT_INC;
+extern double OPEN_BUFFER_PCT;
+extern double HJ_UTG_CALLOPEN_PCT;
+extern double CO_UTG_CALLOPEN_PCT;
+extern double BU_UTG_CALLOPEN_PCT;
+extern double SB_UTG_CALLOPEN_PCT;
+extern double BB_UTG_CALLOPEN_PCT;
+extern double CO_HJ_CALLOPEN_PCT;
+extern double BU_HJ_CALLOPEN_PCT;
+extern double SB_HJ_CALLOPEN_PCT;
+extern double BB_HJ_CALLOPEN_PCT;
+extern double BU_CO_CALLOPEN_PCT;
+extern double SB_CO_CALLOPEN_PCT;
+extern double BB_CO_CALLOPEN_PCT;
+extern double SB_BU_CALLOPEN_PCT;
+extern double BB_BU_CALLOPEN_PCT;
+extern double BB_SB_CALLOPEN_PCT;
+extern double CALLOPEN_BUFFER_PCT;
+extern double BONUS_3BET;
 
 #endif

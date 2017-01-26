@@ -49,7 +49,10 @@ class Display extends Component {
             : "Not set"}
           <br />
           <b>Best Action: </b>
-          {/* 'Not your turn' or 'Action and reason' */}
+          {this.props.comments
+            ? this.props.comments.join(', ')
+            : "None"
+          }
         </span>
       </div>
     )
@@ -228,7 +231,7 @@ class UnboundCli extends Component {
         className="cli"
         onClick={() => {this.inp.focus()}}
       >
-        <Display model={this.model} />
+        <Display model={this.model} comments={this.props.comments} />
 				<div
           className="output"
           ref={(e) => {this.output = e}}
@@ -257,6 +260,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
 		// propName: state.prop
     params_ind: state.params_ind,
+    comments: state.comments,
   }
 }
 

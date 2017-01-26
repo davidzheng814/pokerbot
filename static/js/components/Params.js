@@ -8,7 +8,9 @@ class UnboundParamsView extends Component{
     super();
     this.state = {
       ind: null,
-      params: null
+      params: null,
+      pind: 0,
+      inp: null
     }
   }
 
@@ -20,9 +22,8 @@ class UnboundParamsView extends Component{
         return;
       }
       console.log("Got new params.");
-      this.pelts = [];
       this.props.setParamsInd(x);
-      this.setState({params: data});
+      this.setState({params: data, inp: data[0][1]});
     });
   }
 
@@ -40,8 +41,12 @@ class UnboundParamsView extends Component{
 
   updateParams() {
     var newParams = this.state.params.slice();
-    for (var i = 0; i < newParams.length; ++i) {
-      newParams[i][1] = parseFloat(this.pelts[i].value);
+    var val = parseFloat(this.state.inp);
+    if (isNaN(val)) {
+      this.setState({inp: this.state.params[this.state.pind][1]});
+      return;
+    } else {
+      newParams[this.state.pind][1] = val;
     }
 
     var payload = {
@@ -59,9 +64,13 @@ class UnboundParamsView extends Component{
     });
   }
 
-  onChange(event, i) {
-    this.state.params[i][1] = event.target.value;
-    this.setState({params: this.state.params});
+  onChange(event) {
+    this.state.inp = event.target.value;
+    this.setState({inp: this.state.inp});
+  }
+
+  onSelectChange(e) {
+    this.setState({pind: e.target.value, inp: this.state.params[e.target.value][1]});
   }
 
   render () {
@@ -79,21 +88,24 @@ class UnboundParamsView extends Component{
         />
         <button onClick={() => this.setParams()}>Select Params</button>
         <br />
-        {this.state.params &&
-          this.state.params.map((x, i) => {
-            return (
-              <div key={i}>
-                <label>{x[0]} </label>
-                <input
-                  type="text"
-                  ref={e => {this.pelts[i] = e}}
-                  value={x[1]}
-                  onChange={(e) => this.onChange(e, i)}
-                  onBlur={(e) => this.updateParams()}
-                />
-              </div>
-            )
-        })}
+        {this.state.params && 
+          <div>
+            <select value={this.state.pind} onChange={(e) => this.onSelectChange(e)}>
+              {this.state.params.map((x, i) => {
+                return (
+                  <option key={i} value={i}>{x[0]}</option>
+                )
+                })}
+            </select>
+            <input
+              type="text"
+              ref={e => {this.pelt = e}}
+              value={this.state.inp}
+              onChange={(e) => this.onChange(e)}
+              onBlur={(e) => this.updateParams()}
+            />
+          </div>
+        }
         <br /><br />
       </div>
     )

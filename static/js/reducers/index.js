@@ -6,7 +6,8 @@ const initial_state = {
   num_players: start_num_players,
   ranges: null_ranges(start_num_players),
   aranges: null_ranges(start_num_players),
-  params_ind: null
+  params_ind: null,
+  comments: []
 };
 
 function setRanges(ranges, aranges, newranges) {
@@ -34,7 +35,8 @@ export default (state=initial_state, action) => {
       var [ranges, aranges] = setRanges(state.ranges, state.aranges, action.ranges);
       return Object.assign({}, state, {
         ranges: ranges,
-        aranges: aranges
+        aranges: aranges,
+        comments: action.comments
       });
     case 'RESET_RANGES':
       var newranges = {
